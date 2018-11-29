@@ -1,0 +1,12 @@
+runtime: nodejs
+env: flex
+service: presubmit-service
+
+# Currently scaling is set up to minimize usage of the resources during development
+# TODO(josephperrott): Set up scaling
+manual_scaling:
+  instances: 1
+resources:
+  cpu: 1
+  memory_gb: 2.5
+  disk_size_gb: 25
