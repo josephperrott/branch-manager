@@ -1,13 +1,10 @@
 {
   "compilerOptions": {
-      "noImplicitAny": true,
-      "removeComments": true,
-      "preserveConstEnums": true,
-      "sourceMap": true,
       "lib": ["es2015", "dom"],
       "outDir": "dist"
   },
   "files": [
-      "presubmit-service/app.ts",
+    "presubmit-service/app.ts",
+    "github-event-service/index.ts",
   ]
 }

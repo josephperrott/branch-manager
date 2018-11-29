@@ -3,9 +3,13 @@
   "version": "0.0.0-beta.1",
   "private": true,
   "scripts": {
-    "lint": "tslint --project tsconfig.json"
+    "lint": "tslint --project tsconfig.json",
+    "build": "tsc -b tsconfig.json"
   },
   "dependencies": {
+    "firebase-admin": "^6.3.0",
+    "node-fetch": "^2.3.0",
+    "js-yaml": "^3.12.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "shelljs": "^0.8.3"

@@ -1,10 +1,11 @@
 # Global ignore
 /dist
-/node_modules
+node_modules
 .vscode
+yarn-error.log
 # TODO(josephperrott): Remove yarn.lock from .gitignore
 yarn.lock
 
 # presubmit-service ignore
-presubmit-service/.presubmit_service
 presubmit-service/*.js
+presubmit-service/.presubmit_service
