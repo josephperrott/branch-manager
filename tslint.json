@@ -1,0 +1,8 @@
+{
+  "rules": {
+    "eofline": true,
+    "max-line-length": {
+      "options": [100]
+    }
+  }
+}
