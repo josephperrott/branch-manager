@@ -1,0 +1,22 @@
+{
+  "name": "presubmit-service",
+  "version": "0.0.1",
+  "private": true,
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "scripts": {
+    "start": "node ./app.js",
+    "gcp-build": "tsc app.ts"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "shelljs": "^0.8.3",
+    "typescript": "^3.2.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "@types/node": "^10.12.12"
+  }
+}

@@ -1,1 +1,3 @@
 local_repo
+node_modules
+*.js
