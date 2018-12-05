@@ -1,28 +1,9 @@
 import * as fetch from 'node-fetch';
 import {safeLoad as parseYaml} from 'js-yaml';
 
-import {getFirebaseInstance} from './firebase-common';
-
-/** The configuration for the branch manager. */
-export interface BranchManagerConfig {
-  enabled: boolean;
-  branches: Array<{
-    branch: string;
-    label: string;
-  }>;
-};
-
-/** 
- * Limited implementation of the Github push webhook event from
- * https://developer.github.com/webhooks/#payloads
- */
-export interface GithubPushEvent { 
-  ref: string;
-  repository: {
-    id: number;
-    full_name: string;
-  }
-};
+import {getFirebaseInstance} from '../shared/firebase-common';
+import {BranchManagerRepoConfig} from '../shared/firestore-models'
+import {GithubPushEvent} from '../shared/github-events'
 
 /** The Firebase app. */
 const firestore = getFirebaseInstance().firestore();
@@ -53,7 +34,7 @@ export async function syncRepoConfigFromSource(event: GithubPushEvent) {
 }
 
 /** Retrieve the Repo Config from the github master branch for the repo.  */
-export async function getRepoConfig(fullName: string): Promise<BranchManagerConfig> {
+export async function getRepoConfig(fullName: string): Promise<BranchManagerRepoConfig> {
   /** The url for the raw config file from the repo. */
   const url = `https://raw.githubusercontent.com/${fullName}/master/.github/branch-manager.yml`;
   /** The config object loaded from the repo via github. */
