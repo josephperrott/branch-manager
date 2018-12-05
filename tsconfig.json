@@ -4,7 +4,7 @@
       "outDir": "dist"
   },
   "files": [
-    "presubmit-service/app.ts",
+    "presubmit-service/index.ts",
     "github-event-service/index.ts",
   ]
 }

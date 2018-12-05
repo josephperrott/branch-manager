@@ -6,8 +6,8 @@
     "node": ">=8.0.0"
   },
   "scripts": {
-    "start": "node ./app.js",
-    "gcp-build": "tsc app.ts"
+    "start": "node ./index.js",
+    "gcp-build": "tsc index.ts"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
