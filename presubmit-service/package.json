@@ -1,13 +1,11 @@
 {
-  "name": "presubmit-service",
-  "version": "0.0.1",
   "private": true,
-  "engines": {
-    "node": ">=8.0.0"
-  },
   "scripts": {
-    "start": "node ./index.js",
-    "gcp-build": "tsc index.ts"
+    "start": "node ./dist/index.js",
+    "build": "rm -rf dist/ && tsc -p tsconfig.json",
+    "gcp-build": "yarn build",
+    "serve": "yarn build && yarn start",
+    "deploy": "yarn build && gcloud app deploy"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
