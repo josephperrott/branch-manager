@@ -1,11 +1,37 @@
+import {PullsGetResponse, OrgsGetResponse, ReposGetResponse} from '@octokit/rest';
+
 /** 
- * Limited implementation of the Github push webhook event from
+ * The Github push webhook event from
  * https://developer.github.com/webhooks/#payloads
  */
 export interface GithubPushEvent { 
   ref: string;
-  repository: {
-    id: number;
-    full_name: string;
-  }
+  head: string;
+  before: string;
+  size: number;
+  distinct_size: number;
+  commits: Array<{
+    sha: string;
+    message: string;
+    author: {
+      name: string;
+      email: string;
+    };
+    url: string;
+    distinct: boolean;
+  }>;
+  repository: ReposGetResponse;
+};
+
+
+/** 
+ * The Github pull_request webhook event from
+ * https://developer.github.com/webhooks/#payloads
+ */
+export interface GithubPullRequestEvent { 
+  action: string;
+  number: number;
+  organization: OrgsGetResponse;
+  pull_request: PullsGetResponse
+  repository: ReposGetResponse;
 };
