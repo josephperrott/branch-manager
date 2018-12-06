@@ -1,0 +1,22 @@
+{
+  "private": true,
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "build": "rm -rf dist/ && tsc -b tsconfig.json",
+    "gcp-build": "yarn build",
+    "serve": "yarn build && yarn start",
+    "deploy": "yarn build && gcloud app deploy"
+  },
+  "dependencies": {
+    "@google-cloud/tasks": "^0.2.2",
+    "body-parser": "^1.18.3",
+    "node-fetch": "^2.3.0",
+    "express": "^4.16.4",
+    "shelljs": "^0.8.3",
+    "typescript": "^3.2.1"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.3.3",
+    "@types/node": "^10.12.12"
+  }
+}

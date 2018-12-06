@@ -3,7 +3,7 @@ import {safeLoad as parseYaml} from 'js-yaml';
 
 import {getFirebaseInstance} from '../shared/firebase-common';
 import {BranchManagerRepoConfig} from '../shared/firestore-models'
-import {GithubPushEvent} from '../shared/github-events'
+import {GithubPushEvent} from '../shared/github'
 
 /** The Firebase app. */
 const firestore = getFirebaseInstance().firestore();

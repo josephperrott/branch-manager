@@ -35,3 +35,20 @@ export interface GithubPullRequestEvent {
   pull_request: PullsGetResponse
   repository: ReposGetResponse;
 };
+
+/** Pushes a status to github for a commmit. */
+export async function setStatusOnGithub(
+  org: string, repo: string, sha: string, state: 'error' | 'failure' | 'pending' | 'success', 
+  description: string = '', target_url: string = '', context: string = 'branch-manager') {
+  const url = `https://api.github.com/repos/${org}/${repo}/statuses/${sha}`;
+  const config = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      // TODO(josephperrott): Set up loading token at runtime
+      'Authorization': 'token <insert token here>',
+    },
+    body: JSON.stringify({state, target_url, description, context})
+  };
+  await fetch(url, config);
+}
