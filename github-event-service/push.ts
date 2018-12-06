@@ -9,9 +9,9 @@ import {GithubPushEvent} from '../shared/github-events'
 const firestore = getFirebaseInstance().firestore();
 
 /** Handle webhook events from github of the type, `push`. */
-export function handlePushEvent(event: GithubPushEvent) {
+export async function handlePushEvent(event: GithubPushEvent) {
   if (isMasterBranchRef(event.ref)) {
-    syncRepoConfigFromSource(event);
+    await syncRepoConfigFromSource(event);
   }
   // TODO(josephperrott): Handle pushes to non-master branches.
 }

@@ -1,5 +1,4 @@
 .gcloudignore
 .git
 .gitignore
-local_repo
 node_modules

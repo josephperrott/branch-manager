@@ -7,7 +7,7 @@ import {handlePushEvent} from './push';
  * 
  * The expected events from Github are `pull_request` and `push`.
  */
-export const githubEvents = (request: express.Request, response: express.Response) => {
+export const githubEvents = async (request: express.Request, response: express.Response) => {
   response.setHeader('Content-Type', 'application/json');
   // Github descibes what the type of the webhook event trigger was, and thus
   // what the structure of the request payload will be via the X-Github-Event
@@ -19,7 +19,7 @@ export const githubEvents = (request: express.Request, response: express.Respons
       response.send({result: 'Request was pull_request'});
       break;
     case 'push':
-      handlePushEvent(request.body);
+      await handlePushEvent(request.body);
       response.send({result: 'Request was push'});
       break;
     default:
