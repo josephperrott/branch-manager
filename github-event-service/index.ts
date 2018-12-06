@@ -1,5 +1,6 @@
 import * as express from 'express';
 
+import {handlePullRequestEvent} from './pull-request';
 import {handlePushEvent} from './push';
 
 /** 
@@ -15,7 +16,7 @@ export const githubEvents = async (request: express.Request, response: express.R
   const githubEventType: string = request.header('X-Github-Event');
   switch (githubEventType) {
     case 'pull_request':
-      // TODO(josephperrott): Handle when a pull request is updated.
+      handlePullRequestEvent(request.body);
       response.send({result: 'Request was pull_request'});
       break;
     case 'push':
