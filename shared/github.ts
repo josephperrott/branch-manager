@@ -1,5 +1,7 @@
 import {PullsGetResponse, OrgsGetResponse, ReposGetResponse} from '@octokit/rest';
 
+import {githubToken} from '../project-config.json';
+
 /** 
  * The Github push webhook event from
  * https://developer.github.com/webhooks/#payloads
@@ -46,7 +48,7 @@ export async function setStatusOnGithub(
     headers: {
       'Content-Type': 'application/json',
       // TODO(josephperrott): Set up loading token at runtime
-      'Authorization': 'token <insert token here>',
+      'Authorization': `token ${githubToken}`,
     },
     body: JSON.stringify({state, target_url, description, context})
   };
