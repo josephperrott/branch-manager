@@ -1,7 +1,7 @@
 import * as firebase from 'firebase-admin';
 
 import {getFirebaseInstance} from '../shared/firebase-common';
-import {GithubPullRequestEvent} from '../shared/github-events';
+import {GithubPullRequestEvent} from '../shared/github';
 import {BranchManagerPullRequest} from '../shared/firestore-models';
 
 type DocumentReference = firebase.firestore.DocumentReference;
