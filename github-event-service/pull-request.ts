@@ -5,7 +5,6 @@ import {
   updatePullRequestRef
 } from '../shared/firestore-models';
 
-
 /**
  * Handle webhook events from github of the type, `pull_request`.  Based on the action of 
  * the event, updates or deletes the Pull Request document in firestore.

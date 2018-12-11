@@ -5,6 +5,7 @@
     "serve": "yarn build && functions deploy githubEvents --trigger-http"
   },
   "dependencies": {
+    "@google-cloud/pubsub": "^0.22.2",
     "firebase-admin": "^6.3.0",
     "node-fetch": "^2.3.0",
     "js-yaml": "^3.12.0",
