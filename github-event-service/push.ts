@@ -2,7 +2,7 @@ import * as fetch from 'node-fetch';
 import {safeLoad as parseYaml} from 'js-yaml';
 
 import {getFirebaseInstance} from '../shared/firebase-common';
-import {BranchManagerRepoConfig} from '../shared/firestore-models'
+import {BranchManagerRepoConfig, getConfigRef, updateConfigRef} from '../shared/firestore-models'
 import {GithubPushEvent} from '../shared/github'
 
 /** The Firebase app. */
@@ -21,20 +21,15 @@ export async function handlePushEvent(event: GithubPushEvent) {
  * config has changed.
  */
 export async function syncRepoConfigFromSource(event: GithubPushEvent) {
-  // The document from the repo config collected for the repo, as identified by githubs repo id.
-  const configDoc = firestore.collection('repo_configs').doc(`${event.repository.id}`);
   /** Firestore ref for the instance of the config doc. */
-  const configRef = await configDoc.get();
+  const configRef = await getConfigRef(`${event.repository.id}`);
   /** The config object loaded from the repo via github. */
-  const newConfig = await getRepoConfig(event.repository.full_name);
-
-  if (!configRef.exists || JSON.stringify(configRef.data()) !== JSON.stringify(newConfig)) {
-    configDoc.set(newConfig);
-  }
+  const newConfig = await getRepoConfigFromGithub(event.repository.full_name);
+  updateConfigRef(configRef, newConfig);
 }
 
 /** Retrieve the Repo Config from the github master branch for the repo.  */
-export async function getRepoConfig(fullName: string): Promise<BranchManagerRepoConfig> {
+export async function getRepoConfigFromGithub(fullName: string): Promise<BranchManagerRepoConfig> {
   /** The url for the raw config file from the repo. */
   const url = `https://raw.githubusercontent.com/${fullName}/master/.github/branch-manager.yml`;
   /** The config object loaded from the repo via github. */
