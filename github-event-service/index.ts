@@ -16,7 +16,7 @@ export const githubEvents = async (request: express.Request, response: express.R
   const githubEventType: string = request.header('X-Github-Event');
   switch (githubEventType) {
     case 'pull_request':
-      handlePullRequestEvent(request.body);
+      await handlePullRequestEvent(request.body);
       response.send({result: 'Request was pull_request'});
       break;
     case 'push':

@@ -1,4 +1,5 @@
 import {PullsGetResponse, OrgsGetResponse, ReposGetResponse} from '@octokit/rest';
+import * as fetch from 'node-fetch';
 
 import {githubToken} from '../project-config.json';
 

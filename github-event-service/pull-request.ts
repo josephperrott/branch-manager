@@ -18,22 +18,22 @@ export async function handlePullRequestEvent(event: GithubPullRequestEvent) {
   const labels = event.pull_request.labels.map(label => label.name);
   switch (event.action) {
     case 'labeled':
-      setLabelsForPullRequestRef(pullRequestRef, labels);
+      await setLabelsForPullRequestRef(pullRequestRef, labels);
       break;
     case 'unlabeled':
-      setLabelsForPullRequestRef(pullRequestRef, labels);
+      await setLabelsForPullRequestRef(pullRequestRef, labels);
       break;
     case 'opened':
-      setPullRequestInfoForPullRequestRef(pullRequestRef, event);
+      await setPullRequestInfoForPullRequestRef(pullRequestRef, event);
       break;
     case 'closed':
-      deletePullRequestRef(pullRequestRef);
+      await deletePullRequestRef(pullRequestRef);
       break;
     case 'reopened':
-      setPullRequestInfoForPullRequestRef(pullRequestRef, event);
+      await setPullRequestInfoForPullRequestRef(pullRequestRef, event);
       break;
     case 'synchronize':
-      updateCommitShaForPullRequestRef(pullRequestRef, event.pull_request.merge_commit_sha);
+      await updateCommitShaForPullRequestRef(pullRequestRef, event.pull_request.merge_commit_sha);
       break;
   }
 }
