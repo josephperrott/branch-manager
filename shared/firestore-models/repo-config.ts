@@ -19,6 +19,12 @@ export async function getConfigRef(id: string) {
   return firestore.collection('repo_configs').doc(id);
 }
 
+/** Gets a instance of the Config document. */
+export async function getConfig(id: string) {
+  const configRef = await getConfigRef(id);
+  return configRef.get();
+}
+
 /** Updates all the fields in the Config document.  */
 export async function updateConfigRef(configRef: firebase.firestore.DocumentReference,
                                       newConfig: Partial<BranchManagerRepoConfig>) {
