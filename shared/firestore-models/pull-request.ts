@@ -13,7 +13,6 @@ const firestore = getFirebaseInstance().firestore();
  * request that is of concern for the application rather.
  */
 export interface BranchManagerPullRequest {
-  currentStatus: string;
   labels: string[];
   latestCommitSha: string;
   org: string;

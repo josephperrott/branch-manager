@@ -24,13 +24,11 @@ export const handlePresubmitPrTask = functions
       body: JSON.stringify({org, repo, pr, branch, sha})
     }
     try {
-      const response = await fetch(url, config);
-      await setStatusOnGithub(org, repo, sha, response.json().status)
-
+      const response = await fetch(url, config).then(response => response.json());
+      await setStatusOnGithub(org, repo, sha, response.status);
     } catch (e) {
       await setStatusOnGithub(
         org, repo, sha, 'failure', 
         'The PR does not cleanly cherry-pick onto the targetted branch');
-      
     }
   });
