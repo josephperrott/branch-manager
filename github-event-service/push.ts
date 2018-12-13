@@ -1,12 +1,9 @@
 import * as fetch from 'node-fetch';
 import {safeLoad as parseYaml} from 'js-yaml';
 
-import {getFirebaseInstance} from '../shared/firebase-common';
 import {BranchManagerRepoConfig, getConfigRef, updateConfigRef} from '../shared/firestore-models'
 import {GithubPushEvent} from '../shared/github'
 
-/** The Firebase app. */
-const firestore = getFirebaseInstance().firestore();
 
 /** Handle webhook events from github of the type, `push`. */
 export async function handlePushEvent(event: GithubPushEvent) {

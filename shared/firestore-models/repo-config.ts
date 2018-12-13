@@ -1,8 +1,5 @@
 import * as firebase from 'firebase-admin';
-import {getFirebaseInstance} from '../firebase-common';
-
-/** The Firebase app's firestore database. */
-const firestore = getFirebaseInstance().firestore();
+import {firestoreInstance} from '../firebase-common';
 
 /** A branch from the repo config for the branch manager. */
 export interface BranchManagerRepoConfigBranch {
@@ -19,7 +16,7 @@ export interface BranchManagerRepoConfig {
 /** Gets a reference to the Config document. */
 export async function getConfigRef(id: string) {
   // The document from the repo config collected for the repo, as identified by githubs repo id.
-  return firestore.collection('repo_configs').doc(id);
+  return firestoreInstance.collection('repo_configs').doc(id);
 }
 
 /** Gets a instance of the Config document. */
