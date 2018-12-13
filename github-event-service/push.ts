@@ -20,9 +20,11 @@ export async function handlePushEvent(event: GithubPushEvent) {
     await syncRepoConfigFromSource(event);
   }
   if (await isTargetedBranchRef(`${event.repository.id}`, event.ref)) {
-    const pullRequests = await getPullRequestsByLabel(event.repository.owner.login, event.repository.name, getBranchNamefromGitRef(event.ref));
+    const pullRequests = await getPullRequestsByLabel(
+      event.repository.owner.login, event.repository.name, getBranchNamefromGitRef(event.ref));
     const taskPromises = pullRequests.map(pullRequest => {
-      return createPresubmitTask(`${event.repository.id}`, pullRequest.ref).catch(err => ({error: err}));
+      return createPresubmitTask(`${event.repository.id}`, pullRequest.ref)
+          .catch(err => ({error: err}));
     })
     await Promise.all(taskPromises);
   }

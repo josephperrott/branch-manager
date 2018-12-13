@@ -2,7 +2,12 @@ import * as firebase from 'firebase-admin';
 import {PubSub} from '@google-cloud/pubsub';
 
 import {setStatusOnGithub} from './github';
-import {getConfig, BranchManagerRepoConfig, getBranchForPullRequest, BranchManagerPullRequest} from './firestore-models'
+import {
+  getConfig,
+  BranchManagerRepoConfig,
+  getBranchForPullRequest,
+  BranchManagerPullRequest
+} from './firestore-models'
 
 const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publisher()
 
@@ -20,7 +25,8 @@ export async function createPresubmitTask(
   if (branch) {
     const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
     // Set a pending status on github for the sha.
-    await setStatusOnGithub(pullRequest.org, pullRequest.repo, pullRequest.latestCommitSha, 'pending');
+    await setStatusOnGithub(
+      pullRequest.org, pullRequest.repo, pullRequest.latestCommitSha, 'pending');
     // Create a task to determine the status of the presubmit and publish the task via pubsub.
     const data = JSON.stringify({
       org: pullRequest.org,
