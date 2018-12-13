@@ -1,16 +1,11 @@
-import * as firebase from 'firebase-admin';
 import {GithubPullRequestEvent} from '../shared/github';
 import {
   getOrCreatePullRequestRef,
   deletePullRequestRef,
   updatePullRequestRef,
-  getBranchByLabel,
-  getBranchForPullRequest,
-  getConfig,
-  BranchManagerRepoConfig,
-  BranchManagerPullRequest
+  getBranchByLabel
 } from '../shared/firestore-models';
-import {sendPresubmitTaskToPubSub} from '../shared/tasks'
+import {createPresubmitTask} from '../shared/tasks'
 
 /**
  * Handle webhook events from github of the type, `pull_request`.  Based on the action of 
@@ -50,26 +45,3 @@ export async function handlePullRequestEvent(event: GithubPullRequestEvent) {
       break;
   }
 }
-
-/** 
- * Creates a presubmit task for the pull request, if the application is enabled for
- * the repo and the pull request has one of the target labels.
- */
-async function createPresubmitTask(
-  repoId: string, pullRequestRef: firebase.firestore.DocumentReference) {
-    const repoDoc = await getConfig(repoId);
-    if (!repoDoc.exists) {
-      return;
-    }
-    const repoConfig = (await getConfig(repoId)).data() as BranchManagerRepoConfig;
-    if (!repoConfig.enabled) {
-      return;
-    }
-    const branch = await getBranchForPullRequest(repoId, pullRequestRef);
-    if (branch) {
-      const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
-      await sendPresubmitTaskToPubSub(
-        pullRequest.org, pullRequest.repo, pullRequest.pullRequestNumber, branch.branchName, 
-        pullRequest.latestCommitSha);
-    }
-  }

@@ -5,9 +5,11 @@ import {
   BranchManagerRepoConfig,
   getConfigRef,
   updateConfigRef,
-  getBranchByBranchName
+  getBranchByBranchName,
+  getPullRequestsByLabel
 } from '../shared/firestore-models'
 import {GithubPushEvent} from '../shared/github'
+import {createPresubmitTask} from '../shared/tasks';
 
 /** The regular expression for retrieving the branch from a ref property in the GithubPushEvent */
 const branchRefRegExp = /(?:refs\/heads\/)(\w*)/;
@@ -18,7 +20,11 @@ export async function handlePushEvent(event: GithubPushEvent) {
     await syncRepoConfigFromSource(event);
   }
   if (await isTargetedBranchRef(`${event.repository.id}`, event.ref)) {
-    // TODO(josephperrott): Create a presubmit task for all pull requests for the target
+    const pullRequests = await getPullRequestsByLabel(event.repository.owner.login, event.repository.name, getBranchNamefromGitRef(event.ref));
+    const taskPromises = pullRequests.map(pullRequest => {
+      return createPresubmitTask(`${event.repository.id}`, pullRequest.ref).catch(err => ({error: err}));
+    })
+    await Promise.all(taskPromises);
   }
 }
 
