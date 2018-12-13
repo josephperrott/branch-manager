@@ -43,3 +43,14 @@ export async function getBranchByLabel(
     return config.branches.find(branch => branch.label === label);
   }
 }
+
+// TODO(josephperrott): Decide if this method should just be getBranchByName.
+/** Determine if a label is one of the target labels based on the repos config. */
+export async function getBranchByBranchName(
+    configId: string, branch: string): Promise<BranchManagerRepoConfigBranch> {
+  const configDoc = await getConfig(configId);
+  if (configDoc.exists) {
+    const config = configDoc.data() as BranchManagerRepoConfig;
+    return config.branches.find(target => target.branchName === branch);
+  }
+}
