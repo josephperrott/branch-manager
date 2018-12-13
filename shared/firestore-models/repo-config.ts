@@ -4,13 +4,16 @@ import {getFirebaseInstance} from '../firebase-common';
 /** The Firebase app's firestore database. */
 const firestore = getFirebaseInstance().firestore();
 
+/** A branch from the repo config for the branch manager. */
+export interface BranchManagerRepoConfigBranch {
+  branch: string;
+  label: string;
+};
+
 /** The configuration for the branch manager. */
 export interface BranchManagerRepoConfig {
   enabled: boolean;
-  branches: Array<{
-    branch: string;
-    label: string;
-  }>;
+  branches: Array<BranchManagerRepoConfigBranch>;
 };
 
 /** Gets a reference to the Config document. */
