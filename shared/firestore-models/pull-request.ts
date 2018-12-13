@@ -41,3 +41,12 @@ export async function updatePullRequestRef(pullRequestRef: firebase.firestore.Do
                                            pullRequest: Partial<BranchManagerPullRequest>) {
   await pullRequestRef.set(pullRequest, {merge: true}); 
 }
+
+export async function getPullRequestsByLabel(org: string, repo: string, label: string) {
+  const queryResult = await firestoreInstance
+    .collection('pull_requests')
+    .where('org', '==', org)
+    .where('repo', '==', repo)
+    .where('labels', 'array-contains', label).get();
+  return queryResult.docs;
+}
