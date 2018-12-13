@@ -1,13 +1,9 @@
 import * as firebase from 'firebase-admin';
 
-const config = {
-  // TODO(josephperrott): Set up config via ENV variables.
-};
-
 /** The initialized Firebase app instance */
-let firebaseApp: firebase.app.App;
+export const firebaseInstance = firebase.initializeApp();
+/** The initialized firestore instance */
+export const firestoreInstance = firebaseInstance.firestore();
 
-/** Gets the active instance of the Firebase app, creating one if necessary. */
-export function getFirebaseInstance(): firebase.app.App {
-  return firebaseApp = firebaseApp || firebase.initializeApp(config);
-};
+// Set the timestampsInSnapshots property to true to acknowledge timestamp deprecations.
+firestoreInstance.settings({timestampsInSnapshots: true});
