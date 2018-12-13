@@ -3,7 +3,7 @@ import {firestoreInstance} from '../firebase-common';
 
 /** A branch from the repo config for the branch manager. */
 export interface BranchManagerRepoConfigBranch {
-  branch: string;
+  branchName: string;
   label: string;
 };
 
@@ -31,5 +31,15 @@ export async function updateConfigRef(configRef: firebase.firestore.DocumentRefe
   const oldConfig = await configRef.get();
   if (!oldConfig.exists || JSON.stringify(oldConfig.data()) !== JSON.stringify(newConfig)) {
     configRef.set(newConfig);
+  }
+}
+
+/** Determine if a label is one of the target labels based on the repos config. */
+export async function getBranchByLabel(
+    configId: string, label: string): Promise<BranchManagerRepoConfigBranch> {
+  const configDoc = await getConfig(configId);
+  if (configDoc.exists) {
+    const config = configDoc.data() as BranchManagerRepoConfig;
+    return config.branches.find(branch => branch.label === label);
   }
 }

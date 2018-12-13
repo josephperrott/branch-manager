@@ -4,8 +4,8 @@ import {
   getOrCreatePullRequestRef,
   deletePullRequestRef,
   updatePullRequestRef,
-  isConfiguredTargetLabel,
-  getTargetBranch,
+  getBranchByLabel,
+  getBranchForPullRequest,
   getConfig,
   BranchManagerRepoConfig,
   BranchManagerPullRequest
@@ -37,7 +37,7 @@ export async function handlePullRequestEvent(event: GithubPullRequestEvent) {
     // Event Actions which will sometimes require a task to be created.
     case 'labeled':
       await updatePullRequestRef(pullRequestRef, pullRequest);
-      if (await isConfiguredTargetLabel(repoId, event.label.name)) {
+      if (await getBranchByLabel(repoId, event.label.name)) {
         await createPresubmitTask(repoId, pullRequestRef);
       }
       break;
@@ -65,12 +65,11 @@ async function createPresubmitTask(
     if (!repoConfig.enabled) {
       return;
     }
-    const target = await getTargetBranch(repoId, pullRequestRef);
-    if (!target) {
-      return
+    const branch = await getBranchForPullRequest(repoId, pullRequestRef);
+    if (branch) {
+      const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
+      await sendPresubmitTaskToPubSub(
+        pullRequest.org, pullRequest.repo, pullRequest.pullRequestNumber, branch.branchName, 
+        pullRequest.latestCommitSha);
     }
-    const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
-    await sendPresubmitTaskToPubSub(
-      pullRequest.org, pullRequest.repo, pullRequest.pullRequestNumber, target, 
-      pullRequest.latestCommitSha);
   }
