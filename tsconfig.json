@@ -1,5 +1,12 @@
 {
   "compilerOptions": {
       "lib": ["es2017", "dom"],
-  }
+      "resolveJsonModule": true,
+      "outDir": "dist/"
+  },
+  "include": [
+    "src/branch-manager-service/index.ts",
+    "src/presubmit-service/index.ts",
+  ],
+  
 }
