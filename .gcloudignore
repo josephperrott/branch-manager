@@ -1,0 +1,11 @@
+.gcloudignore
+.gitignore
+LICENSE
+tsconfig.json
+tslint.json
+yarn.lock
+
+.git/
+node_modules/
+/.config
+/src

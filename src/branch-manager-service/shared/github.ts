@@ -6,7 +6,7 @@ import {
 } from '@octokit/rest';
 import * as fetch from 'node-fetch';
 
-import {githubToken} from '../project-config.json';
+import {githubToken} from '../../../.config/project-config.json';
 
 /** 
  * The Github push webhook event from
