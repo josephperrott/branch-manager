@@ -5,9 +5,18 @@ import {setStatusOnGithub} from './github';
 import {
   getConfig,
   BranchManagerRepoConfig,
-  getBranchForPullRequest,
+  getBranchesForPullRequest,
   BranchManagerPullRequest
 } from './firestore-models'
+
+/** The data object to publish on pubsub for a presubmit pr task. */
+export interface PresubmitPrTaskData {
+  org: string;
+  repo: string;
+  pr: string;
+  branches: string[];
+  sha: string;
+}
 
 const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publisher()
 
@@ -21,8 +30,8 @@ export async function createPresubmitTask(
   if (!config || !config.enabled) {
     return;
   }
-  const branch = await getBranchForPullRequest(repoId, pullRequestRef);
-  if (branch) {
+  const branches = await getBranchesForPullRequest(repoId, pullRequestRef);
+  if (branches.length) {
     const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
     // Set a pending status on github for the sha.
     await setStatusOnGithub(
@@ -32,7 +41,7 @@ export async function createPresubmitTask(
       org: pullRequest.org,
       repo: pullRequest.repo,
       pr: pullRequest.pullRequestNumber,
-      branch: branch.branchName,
+      branches: branches.map(branch => branch.branchName),
       sha: pullRequest.latestCommitSha
     });
     await presubmitPrTaskPublisher.publish(Buffer.from(data));
