@@ -44,7 +44,7 @@ function buildGithubStatus(results: PrCheckResult[]): ['failure' | 'success', st
   // Whether all of the PR Checks are passing.
   let passing;
   const branchResults = results.map(result => {
-    passing |= result.status === 'success' ? 1 : 0;
+    passing &= result.status === 'success' ? 1 : 0;
     return `${result.branchName}: ${result.status}`;
   }).join(' | ');
   return [
