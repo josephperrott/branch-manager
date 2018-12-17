@@ -1,12 +1,12 @@
-import {
-  PullsGetResponse,
-  OrgsGetResponse,
-  ReposGetResponse,
-  IssuesGetLabelResponse
-} from '@octokit/rest';
-import * as fetch from 'node-fetch';
+import * as GithubApi from '@octokit/rest'; 
 
 import {githubToken} from '../../../.config/project-config.json';
+
+/** The Github Api instance to interact with the Github REST api. */
+const github = new GithubApi();
+
+// Set the Authentication using the github token.
+github.authenticate({type: 'token', token: githubToken});
 
 /** 
  * The Github push webhook event from
@@ -28,7 +28,7 @@ export interface GithubPushEvent {
     url: string;
     distinct: boolean;
   }>;
-  repository: ReposGetResponse;
+  repository: GithubApi.ReposGetResponse;
 };
 
 
@@ -39,9 +39,9 @@ export interface GithubPushEvent {
 interface PullRequestEvent { 
   action: PullRequestEventActions;
   number: number;
-  organization: OrgsGetResponse;
-  pull_request: PullsGetResponse
-  repository: ReposGetResponse;
+  organization: GithubApi.OrgsGetResponse;
+  pull_request: GithubApi.PullsGetResponse
+  repository: GithubApi.ReposGetResponse;
 };
 
 enum PullRequestEventActions {
@@ -59,7 +59,7 @@ interface PullRequestEventClosed extends PullRequestEvent {
 
 interface PullRequestEventLabeled extends PullRequestEvent {
   action: PullRequestEventActions.Labeled;
-  label: IssuesGetLabelResponse;
+  label: GithubApi.IssuesGetLabelResponse;
 }
 
 interface PullRequestEventOpened extends PullRequestEvent {
@@ -89,16 +89,10 @@ export type GithubPullRequestEvent =
 
 /** Pushes a status to github for a commmit. */
 export async function setStatusOnGithub(
-  org: string, repo: string, sha: string, state: 'error' | 'failure' | 'pending' | 'success',
-  description: string = '', target_url: string = '', context: string = 'branch-manager') {
-  const url = `https://api.github.com/repos/${org}/${repo}/statuses/${sha}`;
-  const config = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `token ${githubToken}`,
-    },
-    body: JSON.stringify({state, target_url, description, context})
-  };
-  await fetch(url, config);
+    owner: string, repo: string, sha: string, state: 'error' | 'failure' | 'pending' | 'success',
+    description: string = '', target_url: string = '', context: string = 'branch-manager') {
+  const statusParams: GithubApi.ReposCreateStatusParams = {
+    context, description, owner, repo, sha, state, target_url 
+  }
+  return github.repos.createStatus(statusParams);
 }
