@@ -1,12 +1,14 @@
 import * as GithubApi from '@octokit/rest'; 
+import * as jwt from 'jsonwebtoken';
+import {readFileSync} from 'fs';
 
-import {githubToken} from '../../../.config/project-config.json';
+import {githubAppId} from '../../../.config/project-config.json';
 
 /** The Github Api instance to interact with the Github REST api. */
 const github = new GithubApi();
 
 // Set the Authentication using the github token.
-github.authenticate({type: 'token', token: githubToken});
+authenticateGithubAsApplication();
 
 /** 
  * The Github push webhook event from
@@ -39,7 +41,6 @@ export interface GithubPushEvent {
 interface PullRequestEvent { 
   action: PullRequestEventActions;
   number: number;
-  organization: GithubApi.OrgsGetResponse;
   pull_request: GithubApi.PullsGetResponse;
   repository: GithubApi.ReposGetResponse;
 }
@@ -86,13 +87,46 @@ export type GithubPullRequestEvent =
   PullRequestEventSynchronize |
   PullRequestEventUnlabeled;
 
-
 /** Pushes a status to github for a commmit. */
 export async function setStatusOnGithub(
     owner: string, repo: string, sha: string, state: 'error' | 'failure' | 'pending' | 'success',
     description: string = '', target_url: string = '', context: string = 'branch-manager') {
+  await authenticateGithubForInstallation(owner, repo);
   const statusParams: GithubApi.ReposCreateStatusParams = {
     context, description, owner, repo, sha, state, target_url 
   };
   return github.repos.createStatus(statusParams);
+}
+
+/** Set github authentication to the the JWT for the github application. */
+export function authenticateGithubAsApplication() {
+  github.authenticate({type: 'app', token: generateJWT()});
+}
+
+/** Set github authentication to the token for the installation for a specific repo. */
+export async function authenticateGithubForInstallation(owner: string, repo: string) {
+  try {
+    authenticateGithubAsApplication();
+    const installationId = await github.apps.findRepoInstallation({owner, repo})
+                                            .then(response => response.data.id);
+    const token = await github.apps.createInstallationToken({installation_id: installationId})
+                                    .then(response => response.data.token);
+    github.authenticate({type: 'token', token});
+  } catch (e) {
+    throw Error(`Could not authenticate as Installation: ${JSON.stringify(e)}`);
+  }
+}
+
+/** Creates a JWT for the github application.  */
+function generateJWT() {
+  const payload = {
+    // Issued at time (iat).
+    iat: Math.floor(Date.now() / 1000),
+    // Expiration time (exp), 1 min later.
+    exp: Math.floor(Date.now() / 1000) + 60,
+    // Github App identifier.
+    iss: githubAppId
+  };
+  return jwt.sign(payload, readFileSync(`${__dirname}/../../../.config/github-app-key.pem`),
+    {algorithm: 'RS256'});
 }

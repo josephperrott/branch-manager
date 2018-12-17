@@ -2,8 +2,8 @@
 # TODO(josephperrott): Determine what should be loged to stderr and stdout accross
 # the script.
 
-# The organization containing the repo to be checked against, e.g. angular
-org=$1
+# The owner of the repo to be checked against, e.g. angular
+owner=$1
 # The repo to be checked against, e.g. material2
 repo=$2
 # The PR number to retrieve the patch files for, e.g. 1234
@@ -11,7 +11,7 @@ pr=$3;
 # The branch in the repo to check for cherry-picking onto, e.g. 6.1.x
 branch=$4;
 # The fullname of the repository to be checked against, e.g. angular/material2
-full_repo="${org}/${repo}"
+full_repo="${owner}/${repo}"
 # Whether the PR can be cherry-picked on to the targetted branch.
 result=false;
 

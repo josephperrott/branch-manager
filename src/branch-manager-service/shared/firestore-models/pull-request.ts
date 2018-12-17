@@ -8,10 +8,15 @@ import {firestore} from '../firebase-common';
  * request that is of concern for the application rather.
  */
 export interface BranchManagerPullRequest {
+  // The labels currently applied to the pull request.
   labels: string[];
+  // The sha of latest commit on the pull request.
   latestCommitSha: string;
-  org: string;
+  // The owner of the pull requests's repository, either an organization or github account.
+  owner: string;
+  // The pull request number.
   pullRequestNumber: string;
+  // The repository the pull request belongs to.
   repo: string;
 }
 
@@ -20,7 +25,7 @@ export async function getOrCreatePullRequestRef(
   event: GithubPullRequestEvent): Promise<FirebaseFirestore.DocumentReference> {
   const pullRequestQueryResult = await firestore
     .collection('pull_requests')
-    .where('org', '==', event.organization.login)
+    .where('owner', '==', event.repository.owner.login)
     .where('repo', '==', event.repository.name)
     .where('pullRequestNumber', '==', `${event.number}`).get();
   if (pullRequestQueryResult.size) {
@@ -40,10 +45,10 @@ export async function updatePullRequestRef(pullRequestRef: FirebaseFirestore.Doc
   await pullRequestRef.set(pullRequest, {merge: true}); 
 }
 
-export async function getPullRequestsByLabel(org: string, repo: string, label: string) {
+export async function getPullRequestsByLabel(owner: string, repo: string, label: string) {
   const queryResult = await firestore
     .collection('pull_requests')
-    .where('org', '==', org)
+    .where('owner', '==', owner)
     .where('repo', '==', repo)
     .where('labels', 'array-contains', label).get();
   return queryResult.docs;

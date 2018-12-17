@@ -6,6 +6,7 @@ yarn-error.log
 .config/
 # TODO(josephperrott): Remove yarn.lock from .gitignore
 yarn.lock
+app.yaml
 
 # presubmit-service ignore
 .presubmit_service/

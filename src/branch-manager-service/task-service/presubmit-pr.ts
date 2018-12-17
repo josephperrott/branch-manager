@@ -21,17 +21,17 @@ export const handlePresubmitPrTask = functions
   .pubsub
   .topic('presubmit-pr-task')
   .onPublish(async (message: functions.pubsub.Message) => {
-    const {org, repo, pr, branches, sha} = message.json as PresubmitPrTaskData;
+    const {owner, repo, pr, branches, sha} = message.json as PresubmitPrTaskData;
     const url = `https://presubmit-service-dot-branch-manager.appspot.com/check_pr`;
     try {
       const results = await Promise.all(branches.map(branch => {
-        const body = JSON.stringify({org, repo, pr, branch, sha});
+        const body = JSON.stringify({owner, repo, pr, branch, sha});
         return fetch(url, buildRequestConfig(body)).then(response => response.json());
-      }));      
-      await setStatusOnGithub(org, repo, sha, ...buildGithubStatus(results));
+      }));
+      await setStatusOnGithub(owner, repo, sha, ...buildGithubStatus(results));
     } catch (e) {
       await setStatusOnGithub(
-        org, repo, sha, 'failure', 
+        owner, repo, sha, 'failure', 
         'The PR was unable to be checked by the cherry pick checking service');
     }
   });
