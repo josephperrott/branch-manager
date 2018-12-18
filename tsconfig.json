@@ -2,7 +2,8 @@
   "compilerOptions": {
       "lib": ["es2017", "dom"],
       "resolveJsonModule": true,
-      "outDir": "dist/"
+      "outDir": "dist/",
+      "noUnusedLocals": true
   },
   "include": [
     "src/branch-manager-service/index.ts",

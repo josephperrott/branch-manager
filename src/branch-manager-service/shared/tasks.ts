@@ -1,4 +1,3 @@
-import * as firebase from 'firebase-admin';
 import {PubSub} from '@google-cloud/pubsub';
 
 import {setStatusOnGithub} from './github';
@@ -25,7 +24,7 @@ const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publi
  * the repo and the pull request has one of the target labels.
  */
 export async function createPresubmitTask(
-    repoId: string, pullRequestRef: firebase.firestore.DocumentReference) {
+    repoId: string, pullRequestRef: FirebaseFirestore.DocumentReference) {
   const config = (await getConfig(repoId)).data() as BranchManagerRepoConfig;
   if (!config || !config.enabled) {
     return;
