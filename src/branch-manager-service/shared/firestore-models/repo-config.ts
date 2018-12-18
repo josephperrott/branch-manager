@@ -12,11 +12,17 @@ export interface BranchManagerRepoConfig {
   branches: Array<BranchManagerRepoConfigBranch>;
 }
 
+/** The default configuration to build other configurations from. */
+const DEFAULT_CONFIG: BranchManagerRepoConfig = {
+  enabled: false,
+  branches: [],
+};
+
 /** Gets a instance of the Config document. */
 export async function getConfig(repoId: number) {
   const configRef = await firestore.collection('repo_configs').doc(`${repoId}`);
   const configDoc = await configRef.get();
-  return configDoc.data() as BranchManagerRepoConfig;
+  return {...DEFAULT_CONFIG, ...configDoc.data()} as BranchManagerRepoConfig;
 }
 
 /** Updates all the fields in the Config document.  */

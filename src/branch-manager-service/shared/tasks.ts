@@ -24,7 +24,7 @@ const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publi
  */
 export async function createPresubmitTask(
     repoId: number, pullRequestRef: FirebaseFirestore.DocumentReference) {
-  const config = await getConfig(repoId)
+  const config = await getConfig(repoId);
   if (!config || !config.enabled) {
     return;
   }
