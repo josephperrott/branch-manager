@@ -10,7 +10,7 @@ import {
 
 /** The data object to publish on pubsub for a presubmit pr task. */
 export interface PresubmitPrTaskData {
-  org: string;
+  owner: string;
   repo: string;
   pr: string;
   branches: string[];
@@ -34,10 +34,10 @@ export async function createPresubmitTask(
     const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
     // Set a pending status on github for the sha.
     await setStatusOnGithub(
-      pullRequest.org, pullRequest.repo, pullRequest.latestCommitSha, 'pending');
+      pullRequest.owner, pullRequest.repo, pullRequest.latestCommitSha, 'pending');
     // Create a task to determine the status of the presubmit and publish the task via pubsub.
     const data = JSON.stringify({
-      org: pullRequest.org,
+      owner: pullRequest.owner,
       repo: pullRequest.repo,
       pr: pullRequest.pullRequestNumber,
       branches: branches.map(branch => branch.branchName),

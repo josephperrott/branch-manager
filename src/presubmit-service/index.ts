@@ -7,7 +7,7 @@ import {getCherryPickConflictStatus} from './check-pr';
 interface CheckPrRequest {
   pr: string;
   repo: string;
-  org: string;
+  owner: string;
   branch: string;
 }
 
@@ -23,7 +23,7 @@ httpServer.use(bodyParser.json());
 // Handle POST requests at /check_pr.
 httpServer.post('/check_pr', (request: express.Request, response: express.Response) => {
   const options = request.body as CheckPrRequest;
-  const {pr, repo, org, branch} = options;
+  const {pr, repo, owner, branch} = options;
 
   // All responses should be JSON responses.
   response.setHeader('content-type', 'application/json');
@@ -31,13 +31,13 @@ httpServer.post('/check_pr', (request: express.Request, response: express.Respon
   response.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
 
   // Check if all parameters are provided.
-  if (!pr || !repo || !branch || !org) {
+  if (!pr || !repo || !branch || !owner) {
     response.status(400);
     response.send({status: 'missing_params', message: `Missing required parameter(s)`});
     return;
   }
   
-  response.send(getCherryPickConflictStatus(org, repo, pr, branch));
+  response.send(getCherryPickConflictStatus(owner, repo, pr, branch));
 });
 
 // Handle all GET requests.
