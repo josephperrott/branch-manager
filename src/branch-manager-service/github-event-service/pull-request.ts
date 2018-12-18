@@ -12,7 +12,7 @@ import {createPresubmitTask} from '../shared/tasks';
  * the event, updates or deletes the Pull Request document in firestore.
  */
 export async function handlePullRequestEvent(event: GithubPullRequestEvent) {
-  const repoId = `${event.repository.id}`;
+  const repoId = event.repository.id;
   const pullRequestRef = await getOrCreatePullRequestRef(event);
   const pullRequest = {
     owner: event.repository.owner.login,
