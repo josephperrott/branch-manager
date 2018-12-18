@@ -12,44 +12,34 @@ export interface BranchManagerRepoConfig {
   branches: Array<BranchManagerRepoConfigBranch>;
 }
 
-/** Gets a reference to the Config document. */
-export async function getConfigRef(id: string) {
-  // The document from the repo config collected for the repo, as identified by githubs repo id.
-  return firestore.collection('repo_configs').doc(id);
-}
-
 /** Gets a instance of the Config document. */
-export async function getConfig(id: string) {
-  const configRef = await getConfigRef(id);
-  return configRef.get();
+export async function getConfig(repoId: number) {
+  const configRef = await firestore.collection('repo_configs').doc(`${repoId}`);
+  const configDoc = await configRef.get();
+  return configDoc.data() as BranchManagerRepoConfig;
 }
 
 /** Updates all the fields in the Config document.  */
-export async function updateConfigRef(configRef: FirebaseFirestore.DocumentReference,
-                                      newConfig: Partial<BranchManagerRepoConfig>) {
-  const oldConfig = await configRef.get();
-  if (!oldConfig.exists || JSON.stringify(oldConfig.data()) !== JSON.stringify(newConfig)) {
-    configRef.set(newConfig);
+export async function updateConfig(repoId: number,
+                                   newConfig: Partial<BranchManagerRepoConfig>) {
+  const configRef = await firestore.collection('repo_configs').doc(`${repoId}`);
+  const configDoc = await configRef.get();
+  if (!configDoc.exists || JSON.stringify(configDoc.data()) !== JSON.stringify(newConfig)) {
+    configRef.set(newConfig, {merge: true});
   }
 }
 
 /** Determine if a label is one of the target labels based on the repos config. */
 export async function getBranchByLabel(
-    configId: string, label: string): Promise<BranchManagerRepoConfigBranch> {
-  const configDoc = await getConfig(configId);
-  if (configDoc.exists) {
-    const config = configDoc.data() as BranchManagerRepoConfig;
-    return config.branches.find(branch => branch.label === label);
-  }
+    repoId: number, label: string): Promise<BranchManagerRepoConfigBranch> {
+  const config = await getConfig(repoId);
+  return config.branches.find(branch => branch.label === label);
 }
 
 // TODO(josephperrott): Decide if this method should just be getBranchByName.
 /** Determine if a label is one of the target labels based on the repos config. */
 export async function getBranchByBranchName(
-    configId: string, branch: string): Promise<BranchManagerRepoConfigBranch> {
-  const configDoc = await getConfig(configId);
-  if (configDoc.exists) {
-    const config = configDoc.data() as BranchManagerRepoConfig;
-    return config.branches.find(target => target.branchName === branch);
-  }
+    repoId: number, branch: string): Promise<BranchManagerRepoConfigBranch> {
+  const config = await getConfig(repoId);
+  return config.branches.find(target => target.branchName === branch);
 }

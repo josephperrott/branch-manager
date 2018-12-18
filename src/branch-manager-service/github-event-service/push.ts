@@ -3,8 +3,7 @@ import {safeLoad as parseYaml} from 'js-yaml';
 
 import {
   BranchManagerRepoConfig,
-  getConfigRef,
-  updateConfigRef,
+  updateConfig,
   getBranchByBranchName,
   getPullRequestsByLabel
 } from '../shared/firestore-models';
@@ -19,11 +18,11 @@ export async function handlePushEvent(event: GithubPushEvent) {
   if (isMasterBranchRef(event.ref)) {
     await syncRepoConfigFromSource(event);
   }
-  if (await isTargetedBranchRef(`${event.repository.id}`, event.ref)) {
+  if (await isTargetedBranchRef(event.repository.id, event.ref)) {
     const pullRequests = await getPullRequestsByLabel(
       event.repository.owner.login, event.repository.name, getBranchNamefromGitRef(event.ref));
     const taskPromises = pullRequests.map(pullRequest => {
-      return createPresubmitTask(`${event.repository.id}`, pullRequest.ref)
+      return createPresubmitTask(event.repository.id, pullRequest.ref)
           .catch(err => ({error: err}));
     });
     await Promise.all(taskPromises);
@@ -35,11 +34,9 @@ export async function handlePushEvent(event: GithubPushEvent) {
  * config has changed.
  */
 export async function syncRepoConfigFromSource(event: GithubPushEvent) {
-  /** Firestore ref for the instance of the config doc. */
-  const configRef = await getConfigRef(`${event.repository.id}`);
   /** The config object loaded from the repo via github. */
   const newConfig = await getRepoConfigFromGithub(event.repository.full_name);
-  updateConfigRef(configRef, newConfig);
+  updateConfig(event.repository.id, newConfig);
 }
 
 /** Retrieve the Repo Config from the github master branch for the repo.  */
@@ -65,7 +62,7 @@ function isMasterBranchRef(branchRef: string) {
 }
 
 /** Whether the branch ref string is a branch targeted in the config. */
-async function isTargetedBranchRef(configId: string, branchRef: string) {
+async function isTargetedBranchRef(repoId: number, branchRef: string) {
   const branchName = getBranchNamefromGitRef(branchRef);
-  return !!(await getBranchByBranchName(configId, branchName)); 
+  return !!(await getBranchByBranchName(repoId, branchName)); 
 }
