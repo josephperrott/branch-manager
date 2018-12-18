@@ -1,5 +1,5 @@
 import {GithubPullRequestEvent} from '../github';
-import {firestore} from '../firebase-common';
+import {firestore} from '../firebase';
 
 /** 
  * Metadata for pull requests as stored in the Branch Manager's firestore.

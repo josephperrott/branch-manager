@@ -6,7 +6,7 @@ import {
   updateConfig,
   getBranchByBranchName,
   getPullRequestsByLabel
-} from '../shared/firestore-models';
+} from '../shared/firestore';
 import {GithubPushEvent} from '../shared/github';
 import {createPresubmitTask} from '../shared/tasks';
 

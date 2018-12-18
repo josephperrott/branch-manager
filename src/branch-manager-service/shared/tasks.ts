@@ -5,7 +5,7 @@ import {
   getConfig,
   getBranchesForPullRequest,
   BranchManagerPullRequest
-} from './firestore-models';
+} from './firestore';
 
 /** The data object to publish on pubsub for a presubmit pr task. */
 export interface PresubmitPrTaskData {
