@@ -1,5 +1,5 @@
-import {getConfig, BranchManagerRepoConfig, BranchManagerRepoConfigBranch} from './repo-config'
-import {BranchManagerPullRequest} from './pull-request'
+import {getConfig, BranchManagerRepoConfig, BranchManagerRepoConfigBranch} from './repo-config';
+import {BranchManagerPullRequest} from './pull-request';
 
 /** Retrieve the target branch for a pull request based on the repos config. */
 export async function getBranchesForPullRequest(

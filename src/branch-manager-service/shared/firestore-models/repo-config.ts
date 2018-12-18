@@ -4,13 +4,13 @@ import {firestore} from '../firebase-common';
 export interface BranchManagerRepoConfigBranch {
   branchName: string;
   label: string;
-};
+}
 
 /** The configuration for the branch manager. */
 export interface BranchManagerRepoConfig {
   enabled: boolean;
   branches: Array<BranchManagerRepoConfigBranch>;
-};
+}
 
 /** Gets a reference to the Config document. */
 export async function getConfigRef(id: string) {

@@ -3,6 +3,7 @@
     "eofline": true,
     "max-line-length": {
       "options": [100]
-    }
+    },
+    "semicolon": "always"
   }
 }

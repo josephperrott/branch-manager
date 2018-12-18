@@ -6,7 +6,7 @@ import {
   BranchManagerRepoConfig,
   getBranchesForPullRequest,
   BranchManagerPullRequest
-} from './firestore-models'
+} from './firestore-models';
 
 /** The data object to publish on pubsub for a presubmit pr task. */
 export interface PresubmitPrTaskData {
@@ -17,7 +17,7 @@ export interface PresubmitPrTaskData {
   sha: string;
 }
 
-const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publisher()
+const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publisher();
 
 /** 
  * Creates a presubmit task via pubsub for the pull request, if the application is enabled for

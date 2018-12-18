@@ -2,7 +2,7 @@ import * as fetch from 'node-fetch';
 import * as functions from 'firebase-functions';
 
 import {setStatusOnGithub} from '../shared/github';
-import {PresubmitPrTaskData} from '../shared/tasks'
+import {PresubmitPrTaskData} from '../shared/tasks';
 
 interface PrCheckResult {
   branchName: string;
@@ -50,7 +50,7 @@ function buildGithubStatus(results: PrCheckResult[]): ['failure' | 'success', st
   return [
     passing ? 'success' : 'failure',
     `Checked ${results.length} branch${results.length !== 1 ? 'es': ''}  —  ${branchResults}`
-  ]
+  ];
 }
 
 /**

@@ -13,7 +13,7 @@ export interface BranchManagerPullRequest {
   org: string;
   pullRequestNumber: string;
   repo: string;
-};
+}
 
 /** Gets a reference to the Pull Request document, creating the document if none exists. */
 export async function getOrCreatePullRequestRef(

@@ -5,7 +5,7 @@ import {
   updatePullRequestRef,
   getBranchByLabel
 } from '../shared/firestore-models';
-import {createPresubmitTask} from '../shared/tasks'
+import {createPresubmitTask} from '../shared/tasks';
 
 /**
  * Handle webhook events from github of the type, `pull_request`.  Based on the action of 

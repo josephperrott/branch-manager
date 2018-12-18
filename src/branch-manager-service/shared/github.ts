@@ -29,7 +29,7 @@ export interface GithubPushEvent {
     distinct: boolean;
   }>;
   repository: GithubApi.ReposGetResponse;
-};
+}
 
 
 /** 
@@ -40,9 +40,9 @@ interface PullRequestEvent {
   action: PullRequestEventActions;
   number: number;
   organization: GithubApi.OrgsGetResponse;
-  pull_request: GithubApi.PullsGetResponse
+  pull_request: GithubApi.PullsGetResponse;
   repository: GithubApi.ReposGetResponse;
-};
+}
 
 enum PullRequestEventActions {
   Closed = 'closed',
@@ -93,6 +93,6 @@ export async function setStatusOnGithub(
     description: string = '', target_url: string = '', context: string = 'branch-manager') {
   const statusParams: GithubApi.ReposCreateStatusParams = {
     context, description, owner, repo, sha, state, target_url 
-  }
+  };
   return github.repos.createStatus(statusParams);
 }

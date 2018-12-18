@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node ./dist/src/presubmit-service/index.js",
-    "lint": "tslint --project tsconfig.json",
+    "lint": "tslint --project tsconfig.json --fix",
     "build": "rm -rf dist/ && tsc -b tsconfig.json",
     "serve-github-event": "yarn build && functions deploy githubEvents --trigger-http",
     "serve-task": "yarn build && functions deploy handlePresubmitPrTask --trigger-topic presubmit-pr-task",

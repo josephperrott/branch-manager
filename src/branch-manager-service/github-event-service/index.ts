@@ -26,4 +26,4 @@ export const githubEvents = async (request: express.Request, response: express.R
     default:
       response.send({result: 'Unknown github event type'});
   }
-}
+};
