@@ -1,0 +1,7 @@
+enabled: true
+
+branches:
+  - branchName: 1.1.1
+    label: "test-1.1.1"
+  - branchName: master
+    label: "test-master"
