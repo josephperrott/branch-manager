@@ -15,7 +15,7 @@ export async function handlePullRequestEvent(event: GithubPullRequestEvent) {
   const repoId = `${event.repository.id}`;
   const pullRequestRef = await getOrCreatePullRequestRef(event);
   const pullRequest = {
-    org: event.organization.login,
+    org: event.repository.owner.login,
     repo: event.repository.name,
     pullRequestNumber: `${event.number}`,
     labels: event.pull_request.labels.map(label => label.name),

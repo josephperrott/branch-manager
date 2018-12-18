@@ -17,18 +17,31 @@ export interface BranchManagerPullRequest {
   repo: string;
 };
 
+export const DEFAULT_PULL_REQUEST: BranchManagerPullRequest = {
+  labels: [],
+  latestCommitSha: '',
+  org: '',
+  pullRequestNumber: '',
+  repo: '',
+}
+
 /** Gets a reference to the Pull Request document, creating the document if none exists. */
 export async function getOrCreatePullRequestRef(
   event: GithubPullRequestEvent): Promise<firebase.firestore.DocumentReference> {
   const pullRequestQueryResult = await firestoreInstance
     .collection('pull_requests')
-    .where('org', '==', event.organization.login)
+    .where('org', '==', event.repository.owner.login)
     .where('repo', '==', event.repository.name)
     .where('pullRequestNumber', '==', `${event.number}`).get();
   if (pullRequestQueryResult.size) {
     return pullRequestQueryResult.docs[0].ref;
   }
   return firestoreInstance.collection('pull_requests').doc();   
+}
+
+export function getPullRequestData(pullRequest: firebase.firestore.DocumentSnapshot) {
+  const pullRequestData = ((pullRequest && pullRequest.data()) || {}) as BranchManagerPullRequest;
+  return {...DEFAULT_PULL_REQUEST, ...pullRequestData};
 }
 
 /** Deletes the Pull Request document from firestore.  */

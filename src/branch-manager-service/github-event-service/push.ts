@@ -45,7 +45,7 @@ export async function syncRepoConfigFromSource(event: GithubPushEvent) {
 /** Retrieve the Repo Config from the github master branch for the repo.  */
 export async function getRepoConfigFromGithub(fullName: string): Promise<BranchManagerRepoConfig> {
   /** The url for the raw config file from the repo. */
-  const url = `https://raw.githubusercontent.com/${fullName}/master/.github/branch-manager.yml`;
+  const url = `https://raw.githubusercontent.com/angular/material2/master/.github/branch-manager.yml`;
   /** The config object loaded from the repo via github. */
   return await fetch(url, {}).then(result => result.text()).then(text => parseYaml(text));
 }

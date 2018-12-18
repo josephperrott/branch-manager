@@ -13,6 +13,12 @@ export interface BranchManagerRepoConfig {
   branches: Array<BranchManagerRepoConfigBranch>;
 };
 
+/** An empty default config object to expand from. */
+const DEFAULT_CONFIG: BranchManagerRepoConfig = {
+  enabled: false,
+  branches: [],
+};
+
 /** Gets a reference to the Config document. */
 export async function getConfigRef(id: string) {
   // The document from the repo config collected for the repo, as identified by githubs repo id.
@@ -22,7 +28,13 @@ export async function getConfigRef(id: string) {
 /** Gets a instance of the Config document. */
 export async function getConfig(id: string) {
   const configRef = await getConfigRef(id);
-  return configRef.get();
+  return configRef.get()
+}
+
+/** Gets the config data from an instance of the Config document. */
+export function getConfigData(config: firebase.firestore.DocumentSnapshot) {
+  const configFromData = ((config && config.data()) || {}) as BranchManagerRepoConfig;
+  return {...DEFAULT_CONFIG, ...configFromData};
 }
 
 /** Updates all the fields in the Config document.  */
@@ -38,19 +50,13 @@ export async function updateConfigRef(configRef: firebase.firestore.DocumentRefe
 export async function getBranchByLabel(
     configId: string, label: string): Promise<BranchManagerRepoConfigBranch> {
   const configDoc = await getConfig(configId);
-  if (configDoc.exists) {
-    const config = configDoc.data() as BranchManagerRepoConfig;
-    return config.branches.find(branch => branch.label === label);
-  }
+  return getConfigData(configDoc).branches.find(branch => branch.label === label);
 }
 
 // TODO(josephperrott): Decide if this method should just be getBranchByName.
 /** Determine if a label is one of the target labels based on the repos config. */
 export async function getBranchByBranchName(
-    configId: string, branch: string): Promise<BranchManagerRepoConfigBranch> {
+    configId: string, branchName: string): Promise<BranchManagerRepoConfigBranch> {
   const configDoc = await getConfig(configId);
-  if (configDoc.exists) {
-    const config = configDoc.data() as BranchManagerRepoConfig;
-    return config.branches.find(target => target.branchName === branch);
-  }
+  return getConfigData(configDoc).branches.find(branch => branch.branchName === branchName);
 }
