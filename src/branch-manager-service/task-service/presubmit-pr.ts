@@ -42,7 +42,7 @@ export const handlePresubmitPrTask = functions
  */
 function buildGithubStatus(results: PrCheckResult[]): ['failure' | 'success', string] {
   // Whether all of the PR Checks are passing.
-  let passing;
+  let passing = 1;
   const branchResults = results.map(result => {
     passing &= result.status === 'success' ? 1 : 0;
     return `${result.branchName}: ${result.status}`;
