@@ -44,21 +44,21 @@ fi
 git fetch --depth 1 $full_repo $branch 2>&1;
 
 # Retrieve the patch file for the PR from github.
-curl -L -s https://github.com/$full_repo/pull/$pr.patch > /tmp/presubmit_service/$full_repo/$pr.patch;
+curl -L -s https://github.com/$full_repo/pull/$pr.diff > /tmp/presubmit_service/$full_repo/$pr.diff;
 
 # Checkout the targeted branch from the repo in a "detached HEAD" state.
 git checkout $full_repo/$branch 2>&1;
 
 # Check if the patch file can be applied to the checked out branch, if it can
 # be set the result to be successful.
-git apply --check /tmp/presubmit_service/$full_repo/$pr.patch 2>&1;
+git apply --check /tmp/presubmit_service/$full_repo/$pr.diff 2>&1;
 if [ $? -eq 0 ]; then
     result=true;
 fi
 
 # Clean up the state of the local repo by removing the temp file and checkout the
 # local master branch to abandon the "detached HEAD" branch that was created.
-rm /tmp/presubmit_service/$full_repo/$pr.patch;
+rm /tmp/presubmit_service/$full_repo/$pr.diff;
 git checkout master 2>&1;
 
 # Communicate the result of the check via the exit code.
