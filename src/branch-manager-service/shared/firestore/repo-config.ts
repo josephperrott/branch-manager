@@ -1,4 +1,4 @@
-import {firestore} from '../firebase-common';
+import {firestore} from '../firebase';
 
 /** A branch from the repo config for the branch manager. */
 export interface BranchManagerRepoConfigBranch {

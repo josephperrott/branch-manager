@@ -4,7 +4,7 @@ import {
   deletePullRequestRef,
   updatePullRequestRef,
   getBranchByLabel
-} from '../shared/firestore-models';
+} from '../shared/firestore';
 import {createPresubmitTask} from '../shared/tasks';
 
 /**
