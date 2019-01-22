@@ -40,10 +40,30 @@ httpServer.post('/check_pr', (request: express.Request, response: express.Respon
   response.send(getCherryPickConflictStatus(owner, repo, pr, branch));
 });
 
+httpServer.get('/check_pr', (request: express.Request, response: express.Response) => {
+  const options = request.query as CheckPrRequest;
+  const {pr, repo, owner, branch} = options;
+  // Check if all parameters are provided.
+  if (!pr || !repo || !branch || !owner) {
+    response.status(400);
+    response.send({status: 'missing_params', message: `Missing required parameter(s)`});
+    return;
+  }
+  const status = getCherryPickConflictStatus(owner, repo, pr, branch);
+  const responseText = `<pre>
+<h2>Cherry Pick Check (<a href="https://github.com/${owner}/${repo}/pull/${pr}">${owner}/${repo}/${pr}</a>)</h2>
+<b>Overall Result:</b>  ${status.status}
+<br>
+<b>Output Logs</b>
+<code>${status.logs.trim() || 'No logs provided'}</code>
+</pre>`
+  response.send(responseText);
+});
+
 // Handle all GET requests.
 httpServer.get('/*', (req: express.Request, res: express.Response) => {
   res.status(200);
-  res.send('Requests to the presubmit-service module must be made via POST request.');
+  res.send('Requests for cherry pick presubmit checks should be made at /check_pr.');
 });
 
 // Start listening on the port for requests.

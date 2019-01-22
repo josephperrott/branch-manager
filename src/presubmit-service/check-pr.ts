@@ -8,8 +8,8 @@ export const getCherryPickConflictStatus =
   const prCheck = shell.exec(
     `${__dirname}/check_if_pr_can_cherry_pick.sh ${owner} ${repo} ${pr} ${branch}`);
   if (prCheck.code === 0) {
-    return {status: 'success', message: '', branchName: branch};
+    return {status: 'success', message: '', branchName: branch, logs: prCheck.stderr};
   } else {
-    return {status: 'failure', message: '', branchName: branch};
+    return {status: 'failure', message: '', branchName: branch, logs: prCheck.stderr};
   }
 };

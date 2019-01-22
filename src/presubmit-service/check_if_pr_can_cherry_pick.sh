@@ -51,10 +51,12 @@ git checkout $full_repo/$branch 2>&1;
 
 # Check if the patch file can be applied to the checked out branch, if it can
 # be set the result to be successful.
-git apply --check /tmp/presubmit_service/$full_repo/$pr.diff 2>&1;
+OUTPUT=$(git apply --check /tmp/presubmit_service/$full_repo/$pr.diff);
 if [ $? -eq 0 ]; then
     result=true;
 fi
+echo $OUTPUT;
+echo $OUTPUT 2>&1;
 
 # Clean up the state of the local repo by removing the temp file and checkout the
 # local master branch to abandon the "detached HEAD" branch that was created.
