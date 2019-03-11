@@ -77,6 +77,7 @@ interface PullRequestEventSynchronize extends PullRequestEvent {
 
 interface PullRequestEventUnlabeled extends PullRequestEvent {
   action: PullRequestEventActions.Unlabeled;
+  label: GithubApi.IssuesGetLabelResponse;
 }
 
 export type GithubPullRequestEvent =

@@ -36,10 +36,13 @@ export async function handlePullRequestEvent(event: GithubPullRequestEvent) {
         await createPresubmitTask(repoId, pullRequestRef);
       }
       break;
-    // Event Actions which will never require a task to be created.
     case 'unlabeled':
       await updatePullRequestRef(pullRequestRef, pullRequest);
+      if (await getBranchByLabel(repoId, event.label.name)) {
+        await createPresubmitTask(repoId, pullRequestRef, 'success');
+      }
       break;
+    // Event Actions which will never require a task to be created.
     case 'closed':
       await deletePullRequestRef(pullRequestRef);
       break;

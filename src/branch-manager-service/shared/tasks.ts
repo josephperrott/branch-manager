@@ -23,14 +23,15 @@ const presubmitPrTaskPublisher = (new PubSub()).topic('presubmit-pr-task').publi
  * the repo and the pull request has one of the target labels.
  */
 export async function createPresubmitTask(
-    repoId: number, pullRequestRef: FirebaseFirestore.DocumentReference) {
+    repoId: number, pullRequestRef: FirebaseFirestore.DocumentReference,
+    forceStatus?:  'error' | 'failure' | 'pending' | 'success') {
   const config = await getConfig(repoId);
   if (!config || !config.enabled) {
     return;
   }
   const branches = await getBranchesForPullRequest(repoId, pullRequestRef);
+  const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
   if (branches.length) {
-    const pullRequest = (await pullRequestRef.get()).data() as BranchManagerPullRequest;
     // Set a pending status on github for the sha.
     await setStatusOnGithub(
       pullRequest.owner, pullRequest.repo, pullRequest.latestCommitSha, 'pending');
@@ -42,6 +43,12 @@ export async function createPresubmitTask(
       branches: branches.map(branch => branch.branchName),
       sha: pullRequest.latestCommitSha
     });
-    await presubmitPrTaskPublisher.publish(Buffer.from(data));
+    return await presubmitPrTaskPublisher.publish(Buffer.from(data));
   }
+  if (forceStatus) {
+    return await setStatusOnGithub(
+      pullRequest.owner, pullRequest.repo, pullRequest.latestCommitSha, forceStatus,
+      'No branches were targeted for this PR');
+  }
+  console.log('didnt happen');
 }
